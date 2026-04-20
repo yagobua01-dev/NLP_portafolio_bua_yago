@@ -42,7 +42,6 @@ def build_openai_client():
     return OpenAI()
 
 # 1. Local Speech to Text
-
 # Convert speech to text using a local Whisper model
 def local_speech_to_text(audio_path: str) -> Dict[str, Any]:
     audio_file = ensure_file_exists(audio_path)
@@ -65,7 +64,6 @@ def local_speech_to_text(audio_path: str) -> Dict[str, Any]:
     }
 
 # 2. Local Text to Speech
-
 # Convert text to speech using local engine (offline)
 def local_text_to_speech(text: str) -> None:
     engine = pyttsx3.init()
@@ -78,7 +76,6 @@ def local_text_to_speech(text: str) -> None:
     engine.runAndWait()
     
 # 3. API Speech to Text
-
 # Convert speech to text using OpenAI API
 def api_speech_to_text(audio_path: str) -> Dict[str, Any]:
     audio_file = ensure_file_exists(audio_path)
@@ -95,3 +92,16 @@ def api_speech_to_text(audio_path: str) -> Dict[str, Any]:
         "task": "api_stt",
         "text": transcript.text
     }
+    
+# 4. API Text to Speech
+# Convert text to speech using OpenAI API
+def api_text_to_speech(text: str, output_file: str) -> None:
+    client = build_openai_client()
+
+    # Generate speech and save it to a file
+    with client.audio.speech.with_streaming_response.create(
+        model="gpt-4o-mini-tts",
+        voice="coral",
+        input=text
+    ) as response:
+        response.stream_to_file(output_file)
