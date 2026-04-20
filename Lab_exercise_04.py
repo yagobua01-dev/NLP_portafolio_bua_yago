@@ -144,6 +144,10 @@ def free_api_speech_to_text(audio_path: str):
     except sr.RequestError:
         return {"task": "free_api_stt", "error": "API unavailable"}
 
+def free_api_text_to_speech(text: str):
+    tts = gTTS(text=text, lang='en')
+    tts.save("free_tts.mp3")
+    print("Audio saved as free_tts.mp3")
 
 # Main program
 # Read command from terminal and run correct function
@@ -179,6 +183,9 @@ def main():
         result = free_api_speech_to_text(args.input)
         pretty_print("FREE API STT", result)
 
+    elif args.command == "free-api-tts":
+        free_api_text_to_speech(args.input)
+    
     else:
         print("Unknown command")
         
