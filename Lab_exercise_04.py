@@ -123,3 +123,37 @@ def translate_audio_to_english(audio_path: str) -> Dict[str, Any]:
         "task": "translation",
         "translated_text": result.text
     }
+
+
+# Main program
+# Read command from terminal and run correct function
+def main():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("command")  # command to execute
+    parser.add_argument("input")    # input text or audio file
+
+    args = parser.parse_args()
+
+    # Select task based on command
+    if args.command == "local-stt":
+        result = local_speech_to_text(args.input)
+        pretty_print("LOCAL STT", result)
+
+    elif args.command == "local-tts":
+        local_text_to_speech(args.input)
+
+    elif args.command == "api-stt":
+        result = api_speech_to_text(args.input)
+        pretty_print("API STT", result)
+
+    elif args.command == "api-tts":
+        api_text_to_speech(args.input, "output.mp3")
+        print("Audio saved as output.mp3")
+
+    elif args.command == "translate-audio":
+        result = translate_audio_to_english(args.input)
+        pretty_print("TRANSLATION", result)
+
+    else:
+        print("Unknown command")
