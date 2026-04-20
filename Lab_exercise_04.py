@@ -105,3 +105,21 @@ def api_text_to_speech(text: str, output_file: str) -> None:
         input=text
     ) as response:
         response.stream_to_file(output_file)
+        
+# 5. Translation
+# Translate audio speech into English text
+def translate_audio_to_english(audio_path: str) -> Dict[str, Any]:
+    audio_file = ensure_file_exists(audio_path)
+    client = build_openai_client()
+
+    # Send audio to translation model
+    with open(audio_file, "rb") as f:
+        result = client.audio.translations.create(
+            model="whisper-1",
+            file=f
+        )
+
+    return {
+        "task": "translation",
+        "translated_text": result.text
+    }
