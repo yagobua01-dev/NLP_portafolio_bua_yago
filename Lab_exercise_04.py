@@ -40,3 +40,26 @@ def build_openai_client():
         raise RuntimeError("OPENAI_API_KEY is not set.")
 
     return OpenAI()
+
+# 1. Local Speech to Text
+
+# Convert speech to text using a local Whisper model
+def local_speech_to_text(audio_path: str) -> Dict[str, Any]:
+    audio_file = ensure_file_exists(audio_path)
+
+    # Load local model
+    model = WhisperModel("base", device="cpu", compute_type="int8")
+
+    # Transcribe audio
+    segments, info = model.transcribe(audio_file)
+
+    text_parts = []
+
+    # Collect all text parts
+    for seg in segments:
+        text_parts.append(seg.text.strip())
+
+    return {
+        "task": "local_stt",
+        "text": " ".join(text_parts)
+    }
