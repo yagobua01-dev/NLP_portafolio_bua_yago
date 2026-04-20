@@ -9,6 +9,8 @@ from typing import Any, Dict, List
 
 import pyttsx3
 from faster_whisper import WhisperModel
+import speech_recognition as sr
+from gtts import gTTS
 
 try:
     from openai import OpenAI
@@ -124,6 +126,24 @@ def translate_audio_to_english(audio_path: str) -> Dict[str, Any]:
         "translated_text": result.text
     }
 
+# Free API STT
+def free_api_speech_to_text(audio_path: str):
+    recognizer = sr.Recognizer()
+
+    with sr.AudioFile(audio_path) as source:
+        audio = recognizer.record(source)
+
+    try:
+        text = recognizer.recognize_google(audio)
+        return {
+            "task": "free_api_stt",
+            "text": text
+        }
+    except sr.UnknownValueError:
+        return {"task": "free_api_stt", "error": "Could not understand audio"}
+    except sr.RequestError:
+        return {"task": "free_api_stt", "error": "API unavailable"}
+
 
 # Main program
 # Read command from terminal and run correct function
@@ -154,6 +174,10 @@ def main():
     elif args.command == "translate-audio":
         result = translate_audio_to_english(args.input)
         pretty_print("TRANSLATION", result)
+        
+    elif args.command == "free-api-stt":
+        result = free_api_speech_to_text(args.input)
+        pretty_print("FREE API STT", result)
 
     else:
         print("Unknown command")
