@@ -76,3 +76,22 @@ def local_text_to_speech(text: str) -> None:
     # Speak the text
     engine.say(text)
     engine.runAndWait()
+    
+# 3. API Speech to Text
+
+# Convert speech to text using OpenAI API
+def api_speech_to_text(audio_path: str) -> Dict[str, Any]:
+    audio_file = ensure_file_exists(audio_path)
+    client = build_openai_client()
+
+    # Send audio file to API
+    with open(audio_file, "rb") as f:
+        transcript = client.audio.transcriptions.create(
+            model="gpt-4o-transcribe",
+            file=f
+        )
+
+    return {
+        "task": "api_stt",
+        "text": transcript.text
+    }
