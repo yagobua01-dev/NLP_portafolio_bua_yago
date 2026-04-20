@@ -63,3 +63,16 @@ def local_speech_to_text(audio_path: str) -> Dict[str, Any]:
         "task": "local_stt",
         "text": " ".join(text_parts)
     }
+
+# 2. Local Text to Speech
+
+# Convert text to speech using local engine (offline)
+def local_text_to_speech(text: str) -> None:
+    engine = pyttsx3.init()
+
+    # Set speaking speed
+    engine.setProperty("rate", 180)
+
+    # Speak the text
+    engine.say(text)
+    engine.runAndWait()
