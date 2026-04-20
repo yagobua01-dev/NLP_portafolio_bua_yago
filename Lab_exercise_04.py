@@ -20,3 +20,10 @@ def ensure_file_exists(path: str) -> Path:
     if not p.exists() or not p.is_file():
         raise FileNotFoundError(f"Audio file not found: {p}")
     return p
+
+def pretty_print(title: str, payload: Any) -> None:
+    print(f"\n=== {title} ===")
+    if isinstance(payload, (dict, list)):
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+    else:
+        print(payload)
